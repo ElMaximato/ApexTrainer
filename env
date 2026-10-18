@@ -1,0 +1,19 @@
+# Copia este archivo a ".env" y rellena tus valores:   cp .env.example .env   (en Windows: copy .env.example .env)
+# El archivo .env NO se sube a GitHub. Este .env.example sí (sin claves reales).
+
+# Secreto para firmar las sesiones (JWT). Mínimo 32 caracteres. Genera uno con:
+#   node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+JWT_SECRET=
+
+# ── MySQL (los mismos datos con los que entras en MySQL Workbench) ──
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=apex_trainer
+
+# Opcionales (estos son los valores por defecto)
+PORT=3001
+CLIENT_ORIGIN=http://localhost:8443
+# API externa de rutinas/ejercicios (wger): gratis y SIN API key
+WGER_BASE_URL=https://wger.de

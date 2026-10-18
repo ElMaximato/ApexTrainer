@@ -1,0 +1,10 @@
+{
+  "description": "This personal training web app offers users tailored workout routines, exercise libraries, and progress tracking in a sleek, modern interface.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
