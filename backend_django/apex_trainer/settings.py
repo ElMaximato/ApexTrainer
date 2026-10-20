@@ -1,3 +1,4 @@
+
 from pathlib import Path
 
 from decouple import Csv, config
@@ -35,7 +36,7 @@ THIRD_APPS = [
 ]
 
 OWN_APPS = [
-    # Aqui se agregan las apps propias (por ejemplo "users")
+    "users",
 ]
 
 INSTALLED_APPS = BASE_APPS + THIRD_APPS + OWN_APPS
@@ -121,3 +122,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# USERS
+AUTH_USER_MODEL = "users.User"
