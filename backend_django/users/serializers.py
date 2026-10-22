@@ -50,3 +50,15 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save(update_fields=["password"])
         return instance
+
+
+class UserMeSerializer(serializers.ModelSerializer):
+    """Datos personales del usuario con sesión iniciada.
+
+    Es de solo lectura y NO incluye la contraseña ni su hash.
+    """
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name", "objetivo_fitness", "date_joined"]
+        read_only_fields = fields
