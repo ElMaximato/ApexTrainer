@@ -1,3 +1,109 @@
+# APEX Trainer: Django + React con autenticación JWT, API de terceros y SOAP
+
+Proyecto del Resultado de Aprendizaje 2 y 3. Backend en **Django REST Framework** con JWT y
+frontend en **React (Vite)** que consume la API.
+
+## Qué incluye
+- **Login** en React conectado al endpoint JWT de Django; el token se guarda en `localStorage`.
+- **AuthContext** (contexto y hook `useAuth`) que mantiene la sesión activa y protege el Dashboard.
+- **Registro de usuarios** (formulario en React y endpoint público en Django).
+- **Dashboard protegido** que muestra el nombre del usuario (`/auth/me/`).
+- **API de terceros** en el Dashboard: clima de Hermosillo con [Open-Meteo](https://open-meteo.com/) usando `fetch`.
+- **Servicio SOAP** consumido desde Django con `zeep` (CountryInfoService).
+
+## Estructura
+```
+backend_django/   API (Django, DRF, SimpleJWT, zeep)
+  apex_trainer/   configuración del proyecto
+  users/          usuarios, registro, /auth/me/ y consumo SOAP
+frontend/         aplicación React
+  src/api/        llamadas al backend y a la API del clima
+  src/context/    AuthContext
+  src/hooks/      useAuth, useUser
+  src/layouts/    layouts de administrador, cliente y común
+  src/pages/      Login, Registro, Home, Dashboard, 404
+  src/routes/     React Router v6
+```
+
+## Instalación
+
+Requisitos: **Python 3.12 o superior** y **Node.js 20 o superior**.
+
+### 1. Backend (Django)
+```powershell
+cd backend_django
+python -m venv venv
+.\venv\Scripts\activate
+python -m pip install -r requirements.txt
+```
+Crea el archivo `backend_django/.env` (hay una plantilla en `.env.example`):
+```
+SECRET_KEY=<una clave larga y aleatoria>
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+Para generar la clave:
+```powershell
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+Crea la base de datos y un administrador, y arranca el servidor:
+```powershell
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+La API queda en http://localhost:8000. La documentación Swagger está en http://localhost:8000/swagger/.
+
+### 2. Frontend (React)
+En otra terminal:
+```powershell
+cd frontend
+npm install
+```
+Crea el archivo `frontend/.env` (hay una plantilla en `.env.example`):
+```
+VITE_BASE_API_URL=http://localhost:8000
+VITE_LOCAL_STORAGE_ITEM_NAME=TOKEN
+```
+Y arranca la aplicación:
+```powershell
+npm run dev
+```
+Se abre en http://localhost:5173.
+
+> Si Windows bloquea `pip.exe` (Smart App Control), usa siempre `python -m pip`.
+
+## Cómo usarlo
+1. Entra a http://localhost:5173/register y crea una cuenta, o usa el superusuario que creaste.
+2. Inicia sesión en http://localhost:5173/login. Te lleva al Dashboard, que muestra tu nombre y el clima.
+3. El botón **Cerrar sesión** borra el token. Si recargas la página con sesión activa, sigues dentro.
+
+## Endpoints principales
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/api/v1/auth/token/` | público (devuelve `access` y `refresh`) |
+| POST | `/api/v1/auth/token/refresh/` | público |
+| POST | `/api/v1/auth/register/` | público (registro) |
+| GET | `/api/v1/auth/me/` | requiere token (`Authorization: Bearer <access>`) |
+| GET | `/api/v1/soap/pais/?codigo=MX` | público (consume SOAP con zeep) |
+| CRUD | `/api/v1/users/` | solo administradores |
+
+El token de acceso dura 15 minutos y el de refresco 1 día.
+
+## Pruebas del backend
+```powershell
+cd backend_django
+python manage.py test
+```
+
+## Seguridad
+- Las contraseñas se guardan con hash; nunca se devuelven en las respuestas.
+- Las contraseñas nuevas se validan con los validadores de Django.
+- CORS limitado a `http://localhost:5173`.
+- Los archivos `.env`, la base de datos local y el entorno virtual no se suben al repositorio.
+
+---
+
 # APEX Personal Training — Unidad 3 (Seguridad, Web Services y APIs)
 
 Aplicación web de entrenamiento personal: **React + Vite** (frontend) y **Node.js** (API REST propia) con **SQLite** como base de datos.

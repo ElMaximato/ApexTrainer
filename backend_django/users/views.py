@@ -1,11 +1,12 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User
-from users.serializers import UserMeSerializer, UserSerializer
+from users.serializers import RegisterSerializer, UserMeSerializer, UserSerializer
 
 
 class UserApiViewSet(ModelViewSet):
@@ -33,3 +34,11 @@ class UserView(APIView):
     def get(self, request):
         # Serializer de solo lectura: nunca incluye la contraseña ni su hash
         return Response(UserMeSerializer(request.user).data)
+
+
+class RegisterView(CreateAPIView):
+    """Registro de usuarios nuevos. No requiere estar autenticado."""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    serializer_class = RegisterSerializer

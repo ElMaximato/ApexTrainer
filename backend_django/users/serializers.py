@@ -62,3 +62,27 @@ class UserMeSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "first_name", "last_name", "objetivo_fitness", "date_joined"]
         read_only_fields = fields
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    """Registro público de usuarios nuevos."""
+
+    password = serializers.CharField(
+        write_only=True,  # se recibe, pero nunca se devuelve
+        style={"input_type": "password"},
+    )
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name", "password"]
+        read_only_fields = ["id"]
+        extra_kwargs = {"first_name": {"required": True}}
+
+    def validate_password(self, value):
+        validate_password(value)  # longitud, contraseñas comunes, solo números
+        return value
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        # create_user guarda el hash, nunca el texto plano
+        return User.objects.create_user(password=password, **validated_data)
